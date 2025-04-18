@@ -1,9 +1,8 @@
-
 import { Card } from "@/components/ui/card";
 import { BarChart, Activity, Timer } from "lucide-react";
 import ProgressSection from "@/components/ProgressSection";
 import AddWorkoutDialog from "@/components/AddWorkoutDialog";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 interface WorkoutSession {
   title: string;
@@ -13,6 +12,14 @@ interface WorkoutSession {
 
 const Dashboard = () => {
   const [workouts, setWorkouts] = useState<WorkoutSession[]>([]);
+
+  const stats = useMemo(() => {
+    return {
+      totalWorkouts: workouts.length,
+      timeSpent: workouts.reduce((acc, curr) => acc + parseInt(curr.duration), 0),
+      totalExercises: workouts.length * 6
+    };
+  }, [workouts]);
 
   const handleAddWorkout = (workout: WorkoutSession) => {
     setWorkouts([...workouts, workout]);
@@ -31,7 +38,7 @@ const Dashboard = () => {
             <Activity className="h-8 w-8 text-purple-600" />
             <div className="ml-4">
               <p className="text-sm text-gray-500">Total Workouts</p>
-              <p className="text-2xl font-bold">24</p>
+              <p className="text-2xl font-bold">{stats.totalWorkouts}</p>
             </div>
           </div>
         </Card>
@@ -41,7 +48,7 @@ const Dashboard = () => {
             <Timer className="h-8 w-8 text-purple-600" />
             <div className="ml-4">
               <p className="text-sm text-gray-500">Time Spent</p>
-              <p className="text-2xl font-bold">32h</p>
+              <p className="text-2xl font-bold">{stats.timeSpent}m</p>
             </div>
           </div>
         </Card>
@@ -51,14 +58,14 @@ const Dashboard = () => {
             <BarChart className="h-8 w-8 text-purple-600" />
             <div className="ml-4">
               <p className="text-sm text-gray-500">Total Exercises</p>
-              <p className="text-2xl font-bold">156</p>
+              <p className="text-2xl font-bold">{stats.totalExercises}</p>
             </div>
           </div>
         </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ProgressSection />
+        <ProgressSection workouts={workouts} />
         <Card className="p-6">
           <h2 className="text-lg font-semibold mb-4">Recent Activities</h2>
           <div className="space-y-4">

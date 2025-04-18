@@ -1,7 +1,7 @@
 
-import { Card } from "@/components/ui/card";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import ExerciseCard from "@/components/ExerciseCard";
 
 const exerciseList = [
   {
@@ -41,14 +41,7 @@ const Exercises = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {exerciseList.map((exercise, index) => (
-          <Card key={index} className="p-4 hover:shadow-lg transition-shadow">
-            <h3 className="font-semibold text-lg mb-2">{exercise.name}</h3>
-            <div className="space-y-1 text-sm text-gray-600">
-              <p>Category: {exercise.category}</p>
-              <p>Difficulty: {exercise.difficulty}</p>
-              <p>Equipment: {exercise.equipment}</p>
-            </div>
-          </Card>
+          <ExerciseCard key={index} {...exercise} />
         ))}
       </div>
     </div>

@@ -1,6 +1,6 @@
 
 import { Card } from "@/components/ui/card";
-import { BarChart, Activity, Timer, Trophy, Award } from "lucide-react";
+import { BarChart, Activity, Timer } from "lucide-react";
 import ProgressSection from "@/components/ProgressSection";
 import AddWorkoutDialog from "@/components/AddWorkoutDialog";
 import { useState } from "react";
@@ -25,7 +25,7 @@ const Dashboard = () => {
         <AddWorkoutDialog onAddWorkout={handleAddWorkout} />
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         <Card className="p-4 hover:bg-gray-50 transition-colors cursor-pointer">
           <div className="flex items-center">
             <Activity className="h-8 w-8 text-purple-600" />
@@ -55,16 +55,6 @@ const Dashboard = () => {
             </div>
           </div>
         </Card>
-        
-        <Card className="p-4 hover:bg-gray-50 transition-colors cursor-pointer">
-          <div className="flex items-center">
-            <Trophy className="h-8 w-8 text-purple-600" />
-            <div className="ml-4">
-              <p className="text-sm text-gray-500">Achievements</p>
-              <p className="text-2xl font-bold">12</p>
-            </div>
-          </div>
-        </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -81,7 +71,6 @@ const Dashboard = () => {
                     <p className="text-sm text-gray-500">{workout.duration} minutes • {new Date(workout.date).toLocaleDateString()}</p>
                   </div>
                 </div>
-                <Award className="h-5 w-5 text-yellow-500" />
               </div>
             ))}
             {workouts.length === 0 && (

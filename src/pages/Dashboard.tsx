@@ -2,11 +2,28 @@
 import { Card } from "@/components/ui/card";
 import { BarChart, Activity, Timer, Trophy, Award } from "lucide-react";
 import ProgressSection from "@/components/ProgressSection";
+import AddWorkoutDialog from "@/components/AddWorkoutDialog";
+import { useState } from "react";
+
+interface WorkoutSession {
+  title: string;
+  duration: string;
+  date: string;
+}
 
 const Dashboard = () => {
+  const [workouts, setWorkouts] = useState<WorkoutSession[]>([]);
+
+  const handleAddWorkout = (workout: WorkoutSession) => {
+    setWorkouts([...workouts, workout]);
+  };
+
   return (
     <div className="p-6 mt-16">
-      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <AddWorkoutDialog onAddWorkout={handleAddWorkout} />
+      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <Card className="p-4 hover:bg-gray-50 transition-colors cursor-pointer">
@@ -55,18 +72,21 @@ const Dashboard = () => {
         <Card className="p-6">
           <h2 className="text-lg font-semibold mb-4">Recent Activities</h2>
           <div className="space-y-4">
-            {[1, 2, 3].map((_, index) => (
+            {workouts.map((workout, index) => (
               <div key={index} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
                 <div className="flex items-center gap-3">
                   <Activity className="h-5 w-5 text-purple-600" />
                   <div>
-                    <p className="font-medium">Workout Session {index + 1}</p>
-                    <p className="text-sm text-gray-500">{index + 1} hour ago</p>
+                    <p className="font-medium">{workout.title}</p>
+                    <p className="text-sm text-gray-500">{workout.duration} minutes • {new Date(workout.date).toLocaleDateString()}</p>
                   </div>
                 </div>
                 <Award className="h-5 w-5 text-yellow-500" />
               </div>
             ))}
+            {workouts.length === 0 && (
+              <p className="text-gray-500 text-center py-4">No workout sessions yet. Add your first workout!</p>
+            )}
           </div>
         </Card>
       </div>

@@ -1,6 +1,6 @@
 
 import { Card } from "@/components/ui/card";
-import { BarChart, Activity, Timer, Trophy } from "lucide-react";
+import { BarChart, Activity, Timer, Trophy, Award } from "lucide-react";
 import ProgressSection from "@/components/ProgressSection";
 
 const Dashboard = () => {

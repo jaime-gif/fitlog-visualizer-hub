@@ -3,8 +3,25 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { User, Mail, Phone } from "lucide-react";
+import { useState } from "react";
+
+interface WorkoutSession {
+  title: string;
+  duration: string;
+  date: string;
+}
 
 const Profile = () => {
+  // Retrieve workouts from localStorage or use empty array if none exist
+  const [workouts] = useState<WorkoutSession[]>(() => {
+    const savedWorkouts = localStorage.getItem('workouts');
+    return savedWorkouts ? JSON.parse(savedWorkouts) : [];
+  });
+
+  // Calculate stats
+  const totalWorkoutHours = Math.round(workouts.reduce((acc, curr) => acc + parseInt(curr.duration), 0) / 60);
+  const memberSince = new Date('2024-04').toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+
   return (
     <div className="p-6 mt-16">
       <h1 className="text-2xl font-bold mb-6">Profile</h1>
@@ -64,15 +81,15 @@ const Profile = () => {
           <div className="space-y-4">
             <div>
               <p className="text-sm text-gray-500">Member Since</p>
-              <p className="font-medium">April 2024</p>
+              <p className="font-medium">{memberSince}</p>
             </div>
             <div>
               <p className="text-sm text-gray-500">Workouts Completed</p>
-              <p className="font-medium">24</p>
+              <p className="font-medium">{workouts.length}</p>
             </div>
             <div>
               <p className="text-sm text-gray-500">Total Exercise Time</p>
-              <p className="font-medium">32 hours</p>
+              <p className="font-medium">{totalWorkoutHours} hours</p>
             </div>
           </div>
         </Card>

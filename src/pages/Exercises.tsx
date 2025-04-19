@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -10,10 +11,6 @@ import type { Exercise } from "@/types/workout";
 const Exercises = () => {
   const { data: exercises = [], isLoading, deleteExercise } = useExercises();
   const [searchQuery, setSearchQuery] = useState("");
-
-  const handleAddExercise = (newExercise: Exercise) => {
-    setExercises([...exercises, newExercise]);
-  };
 
   const filteredExercises = exercises.filter(exercise =>
     exercise.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -35,7 +32,9 @@ const Exercises = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <AddExerciseDialog onAddExercise={handleAddExercise} />
+          <AddExerciseDialog onAddExercise={(exercise: Exercise) => {
+            // Exercise will be added automatically through React Query
+          }} />
         </div>
       </div>
 

@@ -1,44 +1,24 @@
-
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import ExerciseCard from "@/components/ExerciseCard";
 import AddExerciseDialog from "@/components/AddExerciseDialog";
-
-interface Exercise {
-  name: string;
-  category: string;
-  difficulty: string;
-  equipment: string;
-}
-
-const initialExercises = [
-  {
-    name: "Bench Press",
-    category: "Chest",
-    difficulty: "Intermediate",
-    equipment: "Barbell",
-  },
-  {
-    name: "Squats",
-    category: "Legs",
-    difficulty: "Beginner",
-    equipment: "Barbell",
-  },
-  {
-    name: "Pull-ups",
-    category: "Back",
-    difficulty: "Advanced",
-    equipment: "Body Weight",
-  },
-];
+import DeleteExerciseDialog from "@/components/DeleteExerciseDialog";
+import { useExercises } from "@/hooks/useExercises";
+import type { Exercise } from "@/types/workout";
 
 const Exercises = () => {
-  const [exercises, setExercises] = useState<Exercise[]>(initialExercises);
+  const { data: exercises = [], isLoading, deleteExercise } = useExercises();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleAddExercise = (newExercise: Exercise) => {
     setExercises([...exercises, newExercise]);
   };
+
+  const filteredExercises = exercises.filter(exercise =>
+    exercise.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    exercise.category.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="p-6 mt-16">
@@ -51,6 +31,8 @@ const Exercises = () => {
               type="search"
               placeholder="Search exercises..."
               className="pl-8"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
           <AddExerciseDialog onAddExercise={handleAddExercise} />
@@ -58,10 +40,24 @@ const Exercises = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {exercises.map((exercise, index) => (
-          <ExerciseCard key={index} {...exercise} />
+        {filteredExercises.map((exercise) => (
+          <div key={exercise.id} className="relative">
+            <ExerciseCard {...exercise} />
+            <div className="absolute top-2 right-2">
+              <DeleteExerciseDialog 
+                onDelete={() => deleteExercise.mutate(exercise.id)} 
+              />
+            </div>
+          </div>
         ))}
       </div>
+
+      {isLoading && <div>Loading exercises...</div>}
+      {!isLoading && filteredExercises.length === 0 && (
+        <div className="text-center text-gray-500 mt-8">
+          No exercises found. Try a different search or add a new exercise.
+        </div>
+      )}
     </div>
   );
 };

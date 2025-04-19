@@ -5,37 +5,55 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CalendarPlus, Clock } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@/components/AuthProvider";
 
-interface WorkoutSession {
-  title: string;
-  duration: string;
-  date: string;
-}
-
-interface AddWorkoutDialogProps {
-  onAddWorkout: (workout: WorkoutSession) => void;
-}
-
-const AddWorkoutDialog = ({ onAddWorkout }: AddWorkoutDialogProps) => {
-  const [formData, setFormData] = useState<WorkoutSession>({
+const AddWorkoutDialog = () => {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const [open, setOpen] = useState(false);
+  const [formData, setFormData] = useState({
     title: "",
     duration: "",
     date: new Date().toISOString().split('T')[0],
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) {
+      toast.error("You must be logged in to add a workout");
+      return;
+    }
+
     if (!formData.title || !formData.duration || !formData.date) {
       toast.error("Please fill in all fields");
       return;
     }
-    onAddWorkout(formData);
-    toast.success("Workout session added successfully!");
-    setFormData({ title: "", duration: "", date: new Date().toISOString().split('T')[0] });
+
+    try {
+      const { error } = await supabase
+        .from("workout_sessions")
+        .insert({
+          title: formData.title,
+          duration: parseInt(formData.duration),
+          date: formData.date,
+          user_id: user.id,
+        });
+
+      if (error) throw error;
+
+      toast.success("Workout session added successfully!");
+      queryClient.invalidateQueries({ queryKey: ["workouts"] });
+      setOpen(false);
+      setFormData({ title: "", duration: "", date: new Date().toISOString().split('T')[0] });
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="gap-2">
           <CalendarPlus className="h-4 w-4" />

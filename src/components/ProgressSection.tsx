@@ -1,12 +1,7 @@
 
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-
-interface WorkoutSession {
-  title: string;
-  duration: string;
-  date: string;
-}
+import type { WorkoutSession } from "@/types/workout";
 
 interface ProgressSectionProps {
   workouts: WorkoutSession[];

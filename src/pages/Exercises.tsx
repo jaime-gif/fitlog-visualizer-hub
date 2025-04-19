@@ -17,6 +17,11 @@ const Exercises = () => {
     exercise.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const handleDeleteExercise = (exerciseId: string) => {
+    console.log("Handling delete for exercise ID:", exerciseId);
+    deleteExercise.mutate(exerciseId);
+  };
+
   return (
     <div className="p-6 mt-16">
       <div className="flex justify-between items-center mb-6">
@@ -44,7 +49,7 @@ const Exercises = () => {
             <ExerciseCard {...exercise} />
             <div className="absolute top-2 right-2">
               <DeleteExerciseDialog 
-                onDelete={() => deleteExercise.mutate(exercise.id)} 
+                onDelete={() => handleDeleteExercise(exercise.id)} 
               />
             </div>
           </div>

@@ -12,14 +12,22 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
+import { useState } from "react";
 
 interface DeleteExerciseDialogProps {
   onDelete: () => void;
 }
 
 const DeleteExerciseDialog = ({ onDelete }: DeleteExerciseDialogProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleDelete = () => {
+    onDelete();
+    setIsOpen(false);
+  };
+
   return (
-    <AlertDialog>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
         <Button variant="ghost" size="icon" className="h-8 w-8">
           <Trash2 className="h-4 w-4 text-red-500" />
@@ -34,7 +42,7 @@ const DeleteExerciseDialog = ({ onDelete }: DeleteExerciseDialogProps) => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onDelete} className="bg-red-500 hover:bg-red-600">
+          <AlertDialogAction onClick={handleDelete} className="bg-red-500 hover:bg-red-600">
             Delete
           </AlertDialogAction>
         </AlertDialogFooter>

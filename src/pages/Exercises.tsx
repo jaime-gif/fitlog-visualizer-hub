@@ -12,6 +12,7 @@ import { toast } from "sonner";
 const Exercises = () => {
   const { data: exercises = [], isLoading, deleteExercise } = useExercises();
   const [searchQuery, setSearchQuery] = useState("");
+  const [deleteInProgress, setDeleteInProgress] = useState(false);
 
   const filteredExercises = exercises.filter(exercise =>
     exercise.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -27,8 +28,19 @@ const Exercises = () => {
       return;
     }
     
+    if (deleteInProgress) {
+      console.log("Delete already in progress, skipping");
+      return;
+    }
+    
+    setDeleteInProgress(true);
+    
     // Call the mutation with the ID
-    deleteExercise.mutate(exerciseId);
+    deleteExercise.mutate(exerciseId, {
+      onSettled: () => {
+        setDeleteInProgress(false);
+      }
+    });
   };
 
   const handleAddExercise = (exercise: Exercise) => {

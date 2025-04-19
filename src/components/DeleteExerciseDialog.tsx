@@ -21,11 +21,14 @@ interface DeleteExerciseDialogProps {
 
 const DeleteExerciseDialog = ({ exerciseId, onDelete }: DeleteExerciseDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = () => {
     console.log("Delete confirmed in dialog, executing onDelete callback with ID:", exerciseId);
+    setIsDeleting(true);
     onDelete(exerciseId);
     setIsOpen(false);
+    setIsDeleting(false);
   };
 
   return (
@@ -43,9 +46,13 @@ const DeleteExerciseDialog = ({ exerciseId, onDelete }: DeleteExerciseDialogProp
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleDelete} className="bg-red-500 hover:bg-red-600">
-            Delete
+          <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+          <AlertDialogAction 
+            onClick={handleDelete} 
+            className="bg-red-500 hover:bg-red-600"
+            disabled={isDeleting}
+          >
+            {isDeleting ? "Deleting..." : "Delete"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

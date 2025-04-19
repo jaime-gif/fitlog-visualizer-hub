@@ -60,7 +60,8 @@ export const useExercises = () => {
       console.log("Exercise deleted successfully");
       return exerciseId;
     },
-    onSuccess: () => {
+    onSuccess: (deletedId) => {
+      console.log("Exercise deleted, invalidating queries");
       queryClient.invalidateQueries({ queryKey: ["exercises"] });
       toast.success("Exercise deleted successfully");
     },

@@ -1,11 +1,8 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { User, Mail, Phone, LogOut } from "lucide-react";
+import { User, Mail, Phone } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 
 interface WorkoutSession {
   title: string;
@@ -14,9 +11,6 @@ interface WorkoutSession {
 }
 
 const Profile = () => {
-  const navigate = useNavigate();
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-  
   // Retrieve workouts from localStorage or use empty array if none exist
   const [workouts] = useState<WorkoutSession[]>(() => {
     const savedWorkouts = localStorage.getItem('workouts');
@@ -27,35 +21,9 @@ const Profile = () => {
   const totalWorkoutHours = Math.round(workouts.reduce((acc, curr) => acc + parseInt(curr.duration), 0) / 60);
   const memberSince = new Date('2024-04').toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
 
-  const handleLogout = async () => {
-    try {
-      setIsLoggingOut(true);
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      
-      toast.success("Logged out successfully");
-      navigate("/auth");
-    } catch (error: any) {
-      toast.error("Error logging out: " + error.message);
-    } finally {
-      setIsLoggingOut(false);
-    }
-  };
-
   return (
     <div className="p-6 mt-16">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Profile</h1>
-        <Button 
-          variant="destructive" 
-          onClick={handleLogout}
-          disabled={isLoggingOut}
-          className="flex items-center gap-2"
-        >
-          <LogOut className="h-4 w-4" />
-          {isLoggingOut ? "Logging out..." : "Logout"}
-        </Button>
-      </div>
+      <h1 className="text-2xl font-bold mb-6">Profile</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="p-6 lg:col-span-2">

@@ -2,8 +2,11 @@
 import { Link } from "react-router-dom";
 import { Dumbbell, BarChart, Users, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/components/AuthProvider";
 
 const Index = () => {
+  const { user } = useAuth();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
       <div className="container mx-auto px-4 py-16">
@@ -15,9 +18,9 @@ const Index = () => {
           <p className="text-xl text-gray-600 mb-8">
             Log workouts, track progress, and achieve your fitness goals
           </p>
-          <Link to="/dashboard">
+          <Link to={user ? "/dashboard" : "/auth"}>
             <Button size="lg" className="bg-purple-600 hover:bg-purple-700">
-              Get Started
+              {user ? "Go to Dashboard" : "Get Started"}
             </Button>
           </Link>
         </div>

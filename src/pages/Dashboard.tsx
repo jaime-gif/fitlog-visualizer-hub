@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Activity, Timer, BarChart } from "lucide-react";
 import ProgressSection from "@/components/ProgressSection";
@@ -6,10 +5,11 @@ import AddWorkoutDialog from "@/components/AddWorkoutDialog";
 import { useWorkouts } from "@/hooks/useWorkouts";
 import { useAuth } from "@/components/AuthProvider";
 import { Navigate } from "react-router-dom";
+import DeleteWorkoutDialog from "@/components/DeleteWorkoutDialog";
 
 const Dashboard = () => {
   const { user } = useAuth();
-  const { data: workouts = [], isLoading } = useWorkouts();
+  const { data: workouts = [], isLoading, deleteWorkout } = useWorkouts();
 
   if (!user) {
     return <Navigate to="/auth" replace />;
@@ -79,6 +79,9 @@ const Dashboard = () => {
                       </p>
                     </div>
                   </div>
+                  <DeleteWorkoutDialog 
+                    onDelete={() => deleteWorkout.mutate(workout.id)} 
+                  />
                 </div>
               ))}
               {workouts.length === 0 && (

@@ -74,9 +74,21 @@ export const useExercises = () => {
     mutationFn: async (exercise: Omit<Exercise, "id">) => {
       console.log("Adding exercise:", exercise);
       
+      // Get the current user
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        console.error("User not authenticated");
+        throw new Error("User not authenticated");
+      }
+      
+      // Add the exercise with the user's ID
       const { data, error } = await supabase
         .from("exercises")
-        .insert([exercise])
+        .insert([{
+          ...exercise,
+          created_by: user.id
+        }])
         .select();
       
       if (error) {

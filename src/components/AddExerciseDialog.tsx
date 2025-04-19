@@ -8,6 +8,7 @@ import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { useExercises } from "@/hooks/useExercises";
 import type { Exercise } from "@/types/workout";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ExerciseFormData {
   name: string;
@@ -29,8 +30,9 @@ const AddExerciseDialog = ({ onAddExercise }: AddExerciseDialogProps) => {
     equipment: "",
   });
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form submitted with data:", formData);
     
@@ -39,11 +41,24 @@ const AddExerciseDialog = ({ onAddExercise }: AddExerciseDialogProps) => {
       return;
     }
     
+    // Check if user is authenticated
+    const { data } = await supabase.auth.getUser();
+    if (!data.user) {
+      toast.error("You must be logged in to add exercises");
+      return;
+    }
+    
+    setIsLoading(true);
+    
     addExercise.mutate(formData, {
       onSuccess: (newExercise) => {
         onAddExercise(newExercise);
         setFormData({ name: "", category: "", difficulty: "", equipment: "" });
         setIsOpen(false);
+        setIsLoading(false);
+      },
+      onError: () => {
+        setIsLoading(false);
       }
     });
   };
@@ -125,7 +140,9 @@ const AddExerciseDialog = ({ onAddExercise }: AddExerciseDialogProps) => {
             </Select>
           </div>
 
-          <Button type="submit" className="w-full">Add Exercise</Button>
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? "Adding..." : "Add Exercise"}
+          </Button>
         </form>
       </DialogContent>
     </Dialog>

@@ -24,6 +24,11 @@ export const useExercises = () => {
     mutationFn: async (exerciseId: string) => {
       console.log("Deleting exercise with ID:", exerciseId);
       
+      if (!exerciseId) {
+        console.error("Invalid exercise ID");
+        throw new Error("Invalid exercise ID");
+      }
+      
       // First check if exercise exists
       const { data: exercise, error: fetchError } = await supabase
         .from("exercises")

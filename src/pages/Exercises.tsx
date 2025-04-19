@@ -19,6 +19,13 @@ const Exercises = () => {
 
   const handleDeleteExercise = (exerciseId: string) => {
     console.log("Handling delete for exercise ID:", exerciseId);
+    
+    if (!exerciseId) {
+      console.error("Invalid exercise ID for deletion");
+      return;
+    }
+    
+    // Call the mutation with the ID
     deleteExercise.mutate(exerciseId);
   };
 

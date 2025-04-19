@@ -22,6 +22,7 @@ const DeleteExerciseDialog = ({ onDelete }: DeleteExerciseDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleDelete = () => {
+    console.log("Delete confirmed in dialog, executing onDelete callback");
     onDelete();
     setIsOpen(false);
   };

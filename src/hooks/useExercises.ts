@@ -70,8 +70,36 @@ export const useExercises = () => {
     }
   });
 
+  const addExercise = useMutation({
+    mutationFn: async (exercise: Omit<Exercise, "id">) => {
+      console.log("Adding exercise:", exercise);
+      
+      const { data, error } = await supabase
+        .from("exercises")
+        .insert([exercise])
+        .select();
+      
+      if (error) {
+        console.error("Add exercise error:", error);
+        throw error;
+      }
+      
+      console.log("Exercise added successfully:", data);
+      return data[0] as Exercise;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["exercises"] });
+      toast.success("Exercise added successfully");
+    },
+    onError: (error) => {
+      toast.error("Failed to add exercise");
+      console.error("Add exercise error:", error);
+    }
+  });
+
   return {
     ...query,
-    deleteExercise
+    deleteExercise,
+    addExercise
   };
 };

@@ -15,15 +15,16 @@ import { Trash2 } from "lucide-react";
 import { useState } from "react";
 
 interface DeleteExerciseDialogProps {
-  onDelete: () => void;
+  exerciseId: string;
+  onDelete: (id: string) => void;
 }
 
-const DeleteExerciseDialog = ({ onDelete }: DeleteExerciseDialogProps) => {
+const DeleteExerciseDialog = ({ exerciseId, onDelete }: DeleteExerciseDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleDelete = () => {
-    console.log("Delete confirmed in dialog, executing onDelete callback");
-    onDelete();
+    console.log("Delete confirmed in dialog, executing onDelete callback with ID:", exerciseId);
+    onDelete(exerciseId);
     setIsOpen(false);
   };
 

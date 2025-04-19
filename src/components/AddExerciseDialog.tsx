@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
+import { useExercises } from "@/hooks/useExercises";
+import type { Exercise } from "@/types/workout";
 
 interface ExerciseFormData {
   name: string;
@@ -15,30 +17,39 @@ interface ExerciseFormData {
 }
 
 interface AddExerciseDialogProps {
-  onAddExercise: (exercise: ExerciseFormData) => void;
+  onAddExercise: (exercise: Exercise) => void;
 }
 
 const AddExerciseDialog = ({ onAddExercise }: AddExerciseDialogProps) => {
+  const { addExercise } = useExercises();
   const [formData, setFormData] = useState<ExerciseFormData>({
     name: "",
     category: "",
     difficulty: "",
     equipment: "",
   });
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Form submitted with data:", formData);
+    
     if (!formData.name || !formData.category || !formData.difficulty || !formData.equipment) {
       toast.error("Please fill in all fields");
       return;
     }
-    onAddExercise(formData);
-    toast.success("Exercise added successfully!");
-    setFormData({ name: "", category: "", difficulty: "", equipment: "" });
+    
+    addExercise.mutate(formData, {
+      onSuccess: (newExercise) => {
+        onAddExercise(newExercise);
+        setFormData({ name: "", category: "", difficulty: "", equipment: "" });
+        setIsOpen(false);
+      }
+    });
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button className="gap-2">
           <Plus className="h-4 w-4" />

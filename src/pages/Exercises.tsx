@@ -7,6 +7,7 @@ import AddExerciseDialog from "@/components/AddExerciseDialog";
 import DeleteExerciseDialog from "@/components/DeleteExerciseDialog";
 import { useExercises } from "@/hooks/useExercises";
 import type { Exercise } from "@/types/workout";
+import { toast } from "sonner";
 
 const Exercises = () => {
   const { data: exercises = [], isLoading, deleteExercise } = useExercises();
@@ -22,11 +23,17 @@ const Exercises = () => {
     
     if (!exerciseId) {
       console.error("Invalid exercise ID for deletion");
+      toast.error("Cannot delete: Invalid exercise ID");
       return;
     }
     
     // Call the mutation with the ID
     deleteExercise.mutate(exerciseId);
+  };
+
+  const handleAddExercise = (exercise: Exercise) => {
+    console.log("Adding new exercise:", exercise);
+    // Exercise will be added automatically through React Query
   };
 
   return (
@@ -44,9 +51,7 @@ const Exercises = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <AddExerciseDialog onAddExercise={(exercise: Exercise) => {
-            // Exercise will be added automatically through React Query
-          }} />
+          <AddExerciseDialog onAddExercise={handleAddExercise} />
         </div>
       </div>
 
@@ -56,7 +61,8 @@ const Exercises = () => {
             <ExerciseCard {...exercise} />
             <div className="absolute top-2 right-2">
               <DeleteExerciseDialog 
-                onDelete={() => handleDeleteExercise(exercise.id)} 
+                exerciseId={exercise.id}
+                onDelete={handleDeleteExercise} 
               />
             </div>
           </div>

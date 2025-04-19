@@ -46,7 +46,7 @@ export const useExercises = () => {
         throw new Error("Exercise not found");
       }
       
-      // Then delete the exercise
+      // Then delete the exercise regardless of whether it's a default one or not
       const { error } = await supabase
         .from("exercises")
         .delete()

@@ -23,12 +23,23 @@ const DeleteExerciseDialog = ({ exerciseId, onDelete }: DeleteExerciseDialogProp
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
+    if (!exerciseId) {
+      console.error("No exercise ID provided for deletion");
+      return;
+    }
+    
     console.log("Delete confirmed in dialog, executing onDelete callback with ID:", exerciseId);
     setIsDeleting(true);
-    onDelete(exerciseId);
-    setIsOpen(false);
-    setIsDeleting(false);
+    
+    try {
+      await onDelete(exerciseId);
+    } catch (error) {
+      console.error("Error during delete:", error);
+    } finally {
+      setIsOpen(false);
+      setIsDeleting(false);
+    }
   };
 
   return (

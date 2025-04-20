@@ -29,24 +29,8 @@ export const useExercises = () => {
         throw new Error("Invalid exercise ID");
       }
       
-      // First check if exercise exists
-      const { data: exercise, error: fetchError } = await supabase
-        .from("exercises")
-        .select("*")
-        .eq("id", exerciseId)
-        .single();
-      
-      if (fetchError) {
-        console.error("Error fetching exercise:", fetchError);
-        throw fetchError;
-      }
-      
-      if (!exercise) {
-        console.error("Exercise not found");
-        throw new Error("Exercise not found");
-      }
-      
-      // Then delete the exercise regardless of whether it's a default one or not
+      // Skip the check for existing exercise and directly attempt to delete
+      // This avoids any potential permission issues when checking the exercise
       const { error } = await supabase
         .from("exercises")
         .delete()

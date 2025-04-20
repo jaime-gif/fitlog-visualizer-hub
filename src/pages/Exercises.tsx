@@ -19,7 +19,7 @@ const Exercises = () => {
     exercise.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleDeleteExercise = (exerciseId: string) => {
+  const handleDeleteExercise = async (exerciseId: string) => {
     console.log("Handling delete for exercise ID:", exerciseId);
     
     if (!exerciseId) {
@@ -35,12 +35,15 @@ const Exercises = () => {
     
     setDeleteInProgress(true);
     
-    // Call the mutation with the ID
-    deleteExercise.mutate(exerciseId, {
-      onSettled: () => {
-        setDeleteInProgress(false);
-      }
-    });
+    try {
+      // Call the mutation with the ID and wait for it to complete
+      await deleteExercise.mutateAsync(exerciseId);
+      console.log("Exercise deleted successfully");
+    } catch (error) {
+      console.error("Error during delete:", error);
+    } finally {
+      setDeleteInProgress(false);
+    }
   };
 
   const handleAddExercise = (exercise: Exercise) => {
